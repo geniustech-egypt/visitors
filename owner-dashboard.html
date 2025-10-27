@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#67ba94">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta charset="UTF-8" />
+  <title id="pageTitle">نظام متابعة الزيارات - كمبوند كنز</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link id="bootstrapLink" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f4f8fb;
+      padding: 15px;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 70px;
+    }
+    .container-card {
+      max-width: 540px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 34px 28px 24px;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px #0002;
+    }
+    .main-title-3d {
+      text-align: center;
+      font-size: 2.1rem;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+      color: #fff;
+      padding: 18px 0 20px 0;
+      margin-bottom: 24px;
+      border-radius: 16px;
+      letter-spacing: 1px;
+      background: linear-gradient(120deg, #007bff 0%, #20c997 60%, #ffb300 100%);
+      box-shadow:
+        0 1px 6px #0003,
+        0 8px 24px #007bff33,
+        0 0px 0px 8px #fff2 inset;
+      position: relative;
+      text-shadow:
+        1px 2px 4px #0006,
+        0 6px 18px #007bff66,
+        0 1px 0 #3338,
+        2px 3px 0 #ffb30044;
+      overflow: hidden;
+    }
+    .main-title-3d::before {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        120deg,
+        #fff1 0 4px,
+        #ffffff05 4px 20px
+      );
+      opacity: 0.4;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 16px;
+    }
+    .owner-info {
+      background-color: #f3f8fc;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 22px;
+      font-size: 1rem;
+    }
+    .owner-info span {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .alert {
+      padding: 12px;
+      background-color: #e7ffe2;
+      color: #178a3e;
+      border: 1px solid #abd9bb;
+      margin-top: 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+      text-align: center;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .btn {
+      font-size: 1.08rem;
+      margin-top: 2px;
+      border-radius: 10px;
+    }
+    .logout-link {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      color: #dc3545;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .lang-btn {
+      position: absolute;
+      top: 13px;
+      left: 12px;
+      z-index: 2;
+      padding: 6px 11px;
+      font-size: 1.05rem;
+      border-radius: 8px;
+      font-weight: bold;
+      min-width: 36px;
+      min-height: 36px;
+      letter-spacing: 1px;
+      border: 1px solid #007bff;
+      background: #f2f2f2;
+      color: #007bff;
+      transition: background 0.2s, color 0.2s;
+    }
+    .lang-btn:hover {
+      background: #007bff;
+      color: #fff;
+    }
+    footer {
+      position: fixed;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background: #f1f1f1;
+      padding: 15px 0 7px 0;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+      z-index: 100;
+    }
+    footer .copyright {
+      color: #666;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+      letter-spacing: 1px;
+    }
+    @media (max-width:600px) {
+      .container-card {padding: 20px 7px 13px;}
+      body { padding-bottom: 90px; }
+      footer { font-size: 0.95em; }
+      footer .copyright { font-size: 0.8em; }
+      .lang-btn {top: 7px; left: 7px; font-size: 0.95em;}
+    }
+  </style>
+</head>
+<body>
+  <button class="lang-btn btn" id="toggleLangBtn">EN</button>
+  <div class="container-card">
+    <div class="main-title-3d" id="mainTitle">
+      نظام متابعة الزيارات<br>كمبوند كنز
+    </div>
+    <h2 class="mb-3 text-center text-primary" id="dashboardTitle">لوحة تحكم المالك</h2>
+    <div id="ownerInfoBox" class="owner-info mb-4" style="display:none;">
+      <span><strong id="ownerLabel">المالك:</strong> <span id="displayOwnerName"></span></span>
+      <span><strong id="unitLabel">رقم الوحدة:</strong> <span id="displayUnitNumber"></span></span>
+      <span><strong id="phoneLabel">رقم الهاتف:</strong> <span id="displayPhone"></span></span>
+    </div>
+    <div id="mainForm" style="display:none;">
+      <label id="visitorLabel">اسم الزائر:</label>
+      <input type="text" id="visitorName" class="form-control mb-3" placeholder="ادخل الاسم" />
+
+      <label id="carLabel">رقم السيارة:</label>
+      <input type="text" id="carNumber" class="form-control mb-3" placeholder="اختياري" />
+
+      <button class="btn btn-success w-100 mb-2" id="submitVisitBtn">📥 تسجيل الزيارة</button>
+      <button class="btn btn-outline-primary w-100 mb-2" onclick="goToVisitsPage()" id="viewVisitsBtn">📄 عرض حالة الزيارات اليوم</button>
+      <div class="alert" id="confirmationAlert">✅ تم تأكيد دخول أحد الزوار</div>
+      <span class="logout-link" id="logoutBtn">تسجيل خروج المالك</span>
+    </div>
+    <div id="loadingBox" style="text-align:center; margin: 35px 0; color: #007bff;">
+      <div class="spinner-border" role="status"></div>
+      <div style="margin-top:10px;" id="loadingText">جاري التحميل...</div>
+    </div>
+  </div>
+  <footer>
+    <div class="copyright" id="copyrightText">
+      Copyright © 2025 "GENIUS Tech" All Rights Reserved
+    </div>
+  </footer>
+  <script type="module">
+    // لغة الصفحة
+    let currentLang = "ar";
+    const texts = {
+      ar: {
+        pageTitle: "نظام متابعة الزيارات - كمبوند كنز",
+        mainTitle: "نظام متابعة الزيارات<br>كمبوند كنز",
+        dashboardTitle: "لوحة تحكم المالك",
+        ownerLabel: "المالك:",
+        unitLabel: "رقم الوحدة:",
+        phoneLabel: "رقم الهاتف:",
+        visitorLabel: "اسم الزائر:",
+        carLabel: "رقم السيارة:",
+        submitVisitBtn: "📥 تسجيل الزيارة",
+        viewVisitsBtn: "📄 عرض حالة الزيارات اليوم",
+        confirmationAlert: "✅ تم تأكيد دخول أحد الزوار",
+        logoutBtn: "تسجيل خروج المالك",
+        loadingText: "جاري التحميل...",
+        copyright: 'Copyright © 2025 "GENIUS Tech" All Rights Reserved',
+        btnLang: "EN",
+        errorOwnerName: "يرجى إدخال اسم الزائر",
+        errorOwnerData: "لم يتم تحميل بيانات المالك بعد، يرجى إعادة تحميل الصفحة",
+        successVisit: "✅ تم تسجيل الزيارة بنجاح"
+      },
+      en: {
+        pageTitle: "Visit Tracking System - Kenz Compound",
+        mainTitle: "Visit Tracking System<br>Kenz Compound",
+        dashboardTitle: "Owner Dashboard",
+        ownerLabel: "Owner:",
+        unitLabel: "Unit Number:",
+        phoneLabel: "Phone Number:",
+        visitorLabel: "Visitor Name:",
+        carLabel: "Car Number:",
+        submitVisitBtn: "📥 Register Visit",
+        viewVisitsBtn: "📄 View Today's Visits",
+        confirmationAlert: "✅ A visitor's entry has been confirmed",
+        logoutBtn: "Owner Logout",
+        loadingText: "Loading...",
+        copyright: 'Copyright © 2025 "GENIUS Tech" All Rights Reserved',
+        btnLang: "AR",
+        errorOwnerName: "Please enter visitor name",
+        errorOwnerData: "Owner data not loaded yet, please reload the page",
+        successVisit: "✅ Visit registered successfully"
+      }
+    };
+
+    function switchLang() {
+      currentLang = (currentLang === "ar") ? "en" : "ar";
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+      document.getElementById("pageTitle").textContent = texts[currentLang].pageTitle;
+      document.getElementById("mainTitle").innerHTML = texts[currentLang].mainTitle;
+      document.getElementById("dashboardTitle").textContent = texts[currentLang].dashboardTitle;
+      document.getElementById("ownerLabel").textContent = texts[currentLang].ownerLabel;
+      document.getElementById("unitLabel").textContent = texts[currentLang].unitLabel;
+      document.getElementById("phoneLabel").textContent = texts[currentLang].phoneLabel;
+      document.getElementById("visitorLabel").textContent = texts[currentLang].visitorLabel;
+      document.getElementById("visitorName").placeholder = texts[currentLang].visitorLabel;
+      document.getElementById("carLabel").textContent = texts[currentLang].carLabel;
+      document.getElementById("carNumber").placeholder = texts[currentLang].carLabel;
+      document.getElementById("submitVisitBtn").textContent = texts[currentLang].submitVisitBtn;
+      document.getElementById("viewVisitsBtn").textContent = texts[currentLang].viewVisitsBtn;
+      document.getElementById("confirmationAlert").textContent = texts[currentLang].confirmationAlert;
+      document.getElementById("logoutBtn").textContent = texts[currentLang].logoutBtn;
+      document.getElementById("loadingText").textContent = texts[currentLang].loadingText;
+      document.getElementById("copyrightText").textContent = texts[currentLang].copyright;
+      document.getElementById("toggleLangBtn").textContent = texts[currentLang].btnLang;
+      document.getElementById("bootstrapLink").href =
+        currentLang === "ar"
+          ? "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
+          : "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css";
+    }
+
+    document.getElementById("toggleLangBtn").addEventListener("click", switchLang);
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      addDoc,
+      serverTimestamp,
+      onSnapshot,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNudtJkLa0ZuXu0DO1IPLYVC-PtEdBrOE",
+      authDomain: "zowar-c8626.firebaseapp.com",
+      projectId: "zowar-c8626",
+      storageBucket: "zowar-c8626.appspot.com",
+      messagingSenderId: "807825141119",
+      appId: "1:807825141119:web:db3b075d3f54474c3bbe4a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // إظهار بيانات المالك وتحميل الصفحة
+    let ownerData = null;
+    let ownerUid = null;
+    let ownerUnitNumber = null;
+    let ownerName = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "owner-auth.html";
+        return;
+      }
+      ownerUid = user.uid;
+      try {
+        const docSnap = await getDoc(doc(db, "owners", ownerUid));
+        if (!docSnap.exists()) {
+          alert("لا توجد بيانات لهذا الحساب، يرجى التواصل مع الإدارة");
+          await signOut(auth);
+          localStorage.removeItem("ownerHasAccount_v1");
+          window.location.href = "owner-auth.html";
+          return;
+        }
+        ownerData = docSnap.data();
+        ownerUnitNumber = ownerData.unitNumber;
+        ownerName = ownerData.ownerName;
+        document.getElementById('displayOwnerName').textContent = ownerData.ownerName || "";
+        document.getElementById('displayUnitNumber').textContent = ownerData.unitNumber || "";
+        document.getElementById('displayPhone').textContent = ownerData.phoneNumber ?? "";
+        document.getElementById('loadingBox').style.display = "none";
+        document.getElementById('ownerInfoBox').style.display = "block";
+        document.getElementById('mainForm').style.display = "block";
+        startListeningForConfirmations(ownerUnitNumber);
+      } catch (err) {
+        alert("حدث خطأ أثناء تحميل بيانات الحساب. يرجى إعادة تحميل الصفحة أو التواصل مع الدعم.");
+        await signOut(auth);
+        localStorage.removeItem("ownerHasAccount_v1");
+        window.location.href = "owner-auth.html";
+      }
+    });
+
+    // تسجيل زيارة زائر
+    document.getElementById("submitVisitBtn").onclick = async function () {
+      const visitorName = document.getElementById("visitorName").value.trim();
+      const carNumber = document.getElementById("carNumber").value.trim();
+
+      if (!visitorName) {
+        alert(texts[currentLang].errorOwnerName);
+        return;
+      }
+
+      if (!ownerData) {
+        alert(texts[currentLang].errorOwnerData);
+        return;
+      }
+
+      const today = new Date().toISOString().split("T")[0];
+
+      await addDoc(collection(db, "visits"), {
+        visitorName,
+        carNumber,
+        ownerName: ownerData.ownerName,
+        unitNumber: ownerData.unitNumber,
+        phone: ownerData.phoneNumber ?? "",
+        entered: false,
+        date: today,
+        timestamp: serverTimestamp(),
+        ownerUid: ownerUid
+      });
+
+      alert(texts[currentLang].successVisit);
+      document.getElementById("visitorName").value = "";
+      document.getElementById("carNumber").value = "";
+
+      sessionStorage.setItem("soundAllowed", "true");
+    };
+
+    // الاستماع لتأكيد دخول الزائر
+    function startListeningForConfirmations(unitNumber) {
+      const today = new Date().toISOString().split("T")[0];
+      const q = query(collection(db, "visits"),
+        where("unitNumber", "==", unitNumber),
+        where("date", "==", today)
+      );
+
+      let lastPlayedId = null;
+
+      onSnapshot(q, snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === "modified") {
+            const data = change.doc.data();
+            const docId = change.doc.id;
+
+            if (data.entered && lastPlayedId !== docId) {
+              lastPlayedId = docId;
+
+              if (sessionStorage.getItem("soundAllowed") === "true") {
+                const audio = new Audio("dingo.mp3");
+                audio.play().catch(err => console.warn("لم يتم تشغيل الصوت:", err));
+                const alertDiv = document.getElementById("confirmationAlert");
+                alertDiv.textContent = texts[currentLang].confirmationAlert;
+                alertDiv.style.display = "block";
+                setTimeout(() => alertDiv.style.display = "none", 5000);
+                sessionStorage.setItem("soundAllowed", "false");
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // الانتقال لصفحة عرض الزيارات
+    window.goToVisitsPage = function () {
+      sessionStorage.setItem("soundAllowed", "false");
+      window.location.href = "owner-visits.html";
+    };
+
+    // تسجيل الخروج
+    document.getElementById("logoutBtn").onclick = async function() {
+      await signOut(auth);
+      window.location.href = "index.html";
+    }
+
+    // تسجيل خروج تلقائي بعد 10 دقائق من عدم النشاط
+    let logoutTimer;
+    function resetTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(async () => {
+        await signOut(auth);
+        window.location.href = "index.html";
+      }, 10 * 60 * 1000); // 10 دقائق
+    }
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    resetTimer();
+  </script>
+    <script src="/sw-register.js" defer></script>
+</body>
+</html>

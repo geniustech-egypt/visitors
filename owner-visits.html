@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#67ba94">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta charset="UTF-8" />
+  <title id="pageTitle">نظام متابعة الزيارات - كمبوند كنز</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link id="bootstrapLink" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f7fafd;
+      padding: 18px;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 70px;
+    }
+    .container-card {
+      max-width: 650px;
+      margin: auto;
+      background: #fff;
+      padding: 32px 25px 22px;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px #0001;
+    }
+    .main-title-3d {
+      text-align: center;
+      font-size: 2.1rem;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+      color: #fff;
+      padding: 18px 0 20px 0;
+      margin-bottom: 24px;
+      border-radius: 16px;
+      letter-spacing: 1px;
+      background: linear-gradient(120deg, #007bff 0%, #20c997 60%, #ffb300 100%);
+      box-shadow:
+        0 1px 6px #0003,
+        0 8px 24px #007bff33,
+        0 0px 0px 8px #fff2 inset;
+      position: relative;
+      text-shadow:
+        1px 2px 4px #0006,
+        0 6px 18px #007bff66,
+        0 1px 0 #3338,
+        2px 3px 0 #ffb30044;
+      overflow: hidden;
+    }
+    .main-title-3d::before {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        120deg,
+        #fff1 0 4px,
+        #ffffff05 4px 20px
+      );
+      opacity: 0.4;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 16px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #007bff;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .visit {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 13px;
+      background-color: #f6fafd;
+      transition: box-shadow 0.2s;
+    }
+    .visit.entered {
+      background-color: #d4edda;
+      color: #155724;
+      border-color: #b7dfc5;
+      font-weight: bold;
+    }
+    .visit .badge {
+      font-size: 1rem;
+      vertical-align: -2px;
+    }
+    .btn {
+      margin-top: 22px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+    }
+    .lang-btn {
+      position: absolute;
+      top: 13px;
+      left: 12px;
+      z-index: 2;
+      padding: 6px 11px;
+      font-size: 1.05rem;
+      border-radius: 8px;
+      font-weight: bold;
+      min-width: 36px;
+      min-height: 36px;
+      letter-spacing: 1px;
+      border: 1px solid #007bff;
+      background: #f2f2f2;
+      color: #007bff;
+      transition: background 0.2s, color 0.2s;
+    }
+    .lang-btn:hover {
+      background: #007bff;
+      color: #fff;
+    }
+    footer {
+      position: fixed;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background: #f1f1f1;
+      padding: 15px 0 7px 0;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+      z-index: 100;
+    }
+    footer .copyright {
+      color: #666;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+      letter-spacing: 1px;
+    }
+    @media (max-width:600px) {
+      body { padding-bottom: 90px;}
+      footer { font-size: 0.95em; }
+      footer .copyright { font-size: 0.8em; }
+      .lang-btn {top: 7px; left: 7px; font-size: 0.95em;}
+    }
+  </style>
+</head>
+<body>
+  <button class="lang-btn btn" id="toggleLangBtn">EN</button>
+  <div class="container-card">
+    <div class="main-title-3d" id="mainTitle">
+      نظام متابعة الزيارات<br>كمبوند كنز
+    </div>
+    <h2 id="visitsTitle">📄 حالة الزيارات المسجلة اليوم</h2>
+    <div id="visitsContainer">
+      <div class="text-center text-muted" id="loadingVisitsText">جاري تحميل البيانات...</div>
+    </div>
+    <button class="btn btn-outline-primary w-100" id="backBtn" onclick="window.location.href='owner-dashboard.html'">🔙 الرجوع لتسجيل زيارة جديدة</button>
+  </div>
+  <footer>
+    <div class="copyright" id="copyrightText">
+      Copyright © 2025 "GENIUS Tech" All Rights Reserved
+    </div>
+  </footer>
+  <script type="module">
+    // لغة الصفحة
+    let currentLang = "ar";
+    const texts = {
+      ar: {
+        pageTitle: "نظام متابعة الزيارات - كمبوند كنز",
+        mainTitle: "نظام متابعة الزيارات<br>كمبوند كنز",
+        visitsTitle: "📄 حالة الزيارات المسجلة اليوم",
+        loadingVisitsText: "جاري تحميل البيانات...",
+        noVisits: "لا توجد زيارات مسجلة حتى الآن.",
+        visitor: "الزائر:",
+        carNumber: "رقم السيارة:",
+        entered: "تم الدخول:",
+        visitTime: "وقت تسجيل الزيارة:",
+        yes: "نعم",
+        no: "لا",
+        entryTime: "وقت دخول الزائر:",
+        notAvailable: "غير متوفر",
+        notSet: "غير محدد",
+        backBtn: "🔙 الرجوع لتسجيل زيارة جديدة",
+        copyright: 'Copyright © 2025 "GENIUS Tech" All Rights Reserved',
+        btnLang: "EN",
+        error: "حدث خطأ أثناء تحميل البيانات."
+      },
+      en: {
+        pageTitle: "Visit Tracking System - Kenz Compound",
+        mainTitle: "Visit Tracking System<br>Kenz Compound",
+        visitsTitle: "📄 Today's Registered Visits",
+        loadingVisitsText: "Loading data...",
+        noVisits: "No visits registered yet.",
+        visitor: "Visitor:",
+        carNumber: "Car Number:",
+        entered: "Entered:",
+        visitTime: "Visit Registered At:",
+        yes: "Yes",
+        no: "No",
+        entryTime: "Entry Time:",
+        notAvailable: "Not available",
+        notSet: "Not set",
+        backBtn: "🔙 Back to Register New Visit",
+        copyright: 'Copyright © 2025 "GENIUS Tech" All Rights Reserved',
+        btnLang: "AR",
+        error: "Error loading data."
+      }
+    };
+
+    function switchLang() {
+      currentLang = (currentLang === "ar") ? "en" : "ar";
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+      document.getElementById("pageTitle").textContent = texts[currentLang].pageTitle;
+      document.getElementById("mainTitle").innerHTML = texts[currentLang].mainTitle;
+      document.getElementById("visitsTitle").textContent = texts[currentLang].visitsTitle;
+      document.getElementById("loadingVisitsText").textContent = texts[currentLang].loadingVisitsText;
+      document.getElementById("backBtn").textContent = texts[currentLang].backBtn;
+      document.getElementById("copyrightText").textContent = texts[currentLang].copyright;
+      document.getElementById("toggleLangBtn").textContent = texts[currentLang].btnLang;
+      document.getElementById("bootstrapLink").href =
+        currentLang === "ar"
+          ? "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
+          : "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css";
+      // إعادة تحميل الزيارات بالنص الجديد
+      if (window.lastVisitsData) renderVisits(window.lastVisitsData);
+    }
+
+    document.getElementById("toggleLangBtn").addEventListener("click", switchLang);
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNudtJkLa0ZuXu0DO1IPLYVC-PtEdBrOE",
+      authDomain: "zowar-c8626.firebaseapp.com",
+      projectId: "zowar-c8626",
+      storageBucket: "zowar-c8626.appspot.com",
+      messagingSenderId: "807825141119",
+      appId: "1:807825141119:web:db3b075d3f54474c3bbe4a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const visitsContainer = document.getElementById("visitsContainer");
+
+    // الحماية: لا يدخل إلا المالك المسجل دخوله
+    let ownerUnitNumber = null;
+    let unsubscribe = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "owner-auth.html";
+        return;
+      }
+      try {
+        const docSnap = await getDoc(doc(db, "owners", user.uid));
+        if (!docSnap.exists()) {
+          alert(texts[currentLang].error);
+          await signOut(auth);
+          window.location.href = "owner-auth.html";
+          return;
+        }
+        ownerUnitNumber = docSnap.data().unitNumber;
+        loadVisits(ownerUnitNumber);
+      } catch (err) {
+        visitsContainer.innerHTML = `<div class='alert alert-danger text-center'>${texts[currentLang].error}</div>`;
+      }
+    });
+
+    // تحميل زيارات الوحدة لليوم الحالي
+    function loadVisits(unitNumber) {
+      const today = new Date().toISOString().split("T")[0];
+      if (unsubscribe) unsubscribe(); // أوقف الاستماع السابق إذا وجد
+
+      const q = query(collection(db, "visits"),
+        where("unitNumber", "==", unitNumber),
+        where("date", "==", today)
+      );
+
+      unsubscribe = onSnapshot(q, snapshot => {
+        let visitsArr = [];
+        if (snapshot.empty) {
+          visitsContainer.innerHTML = `<div class='text-center text-muted'>${texts[currentLang].noVisits}</div>`;
+          window.lastVisitsData = [];
+          return;
+        }
+        visitsContainer.innerHTML = "";
+        let counter = 1;
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          visitsArr.push(data);
+        });
+        window.lastVisitsData = visitsArr;
+        renderVisits(visitsArr);
+      });
+    }
+
+    function renderVisits(visitsArr) {
+      visitsContainer.innerHTML = "";
+      let counter = 1;
+      if (visitsArr.length === 0) {
+        visitsContainer.innerHTML = `<div class='text-center text-muted'>${texts[currentLang].noVisits}</div>`;
+        return;
+      }
+      visitsArr.forEach(data => {
+        const div = document.createElement("div");
+        div.className = "visit" + (data.entered ? " entered" : "");
+        div.innerHTML = `
+          <div class="d-flex align-items-center mb-2">
+            <span class="badge bg-secondary me-2">${counter++}</span>
+            <strong>${texts[currentLang].visitor}</strong> ${data.visitorName}
+          </div>
+          <div><strong>${texts[currentLang].carNumber}</strong> ${data.carNumber || texts[currentLang].notSet}</div>
+          <div><strong>${texts[currentLang].entered}</strong> ${data.entered ? `<span class='badge bg-success'>${texts[currentLang].yes}</span>` : `<span class='badge bg-danger'>${texts[currentLang].no}</span>`}</div>
+          <div><strong>${texts[currentLang].visitTime}</strong> ${data.timestamp?.toDate().toLocaleTimeString() || texts[currentLang].notAvailable}</div>
+          ${data.entered ? `<div><strong>${texts[currentLang].entryTime}</strong> ${
+            data.entryTime
+              ? (data.entryTime.seconds
+                  ? new Date(data.entryTime.seconds * 1000).toLocaleTimeString()
+                  : new Date(data.entryTime).toLocaleTimeString())
+              : texts[currentLang].notAvailable
+          }</div>` : ""}
+        `;
+        visitsContainer.appendChild(div);
+      });
+    }
+
+    // تسجيل خروج تلقائي بعد 10 دقائق من عدم النشاط
+    let logoutTimer;
+    function resetTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(async () => {
+        await signOut(auth);
+        window.location.href = "owner-auth.html";
+      }, 10 * 60 * 1000); // 10 دقائق
+    }
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+    resetTimer();
+  </script>
+    <script src="/sw-register.js" defer></script>
+
+</body>
+</html>

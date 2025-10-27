@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#67ba94">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta charset="UTF-8" />
+  <title>نظام متابعة الزيارات - كمبوند كنز</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f6fafd;
+      min-height: 100vh;
+      padding: 15px;
+      position: relative;
+      padding-bottom: 70px;
+    }
+    .container-card {
+      max-width: 700px;
+      margin: 32px auto;
+      background: #fff;
+      padding: 34px 25px 22px;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px #0002;
+    }
+    .main-title-3d {
+      text-align: center;
+      font-size: 2.1rem;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+      color: #fff;
+      padding: 18px 0 20px 0;
+      margin-bottom: 24px;
+      border-radius: 16px;
+      letter-spacing: 1px;
+      background: linear-gradient(120deg, #007bff 0%, #20c997 60%, #ffb300 100%);
+      box-shadow:
+        0 1px 6px #0003,
+        0 8px 24px #007bff33,
+        0 0px 0px 8px #fff2 inset;
+      position: relative;
+      text-shadow:
+        1px 2px 4px #0006,
+        0 6px 18px #007bff66,
+        0 1px 0 #3338,
+        2px 3px 0 #ffb30044;
+      overflow: hidden;
+    }
+    .main-title-3d::before {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        120deg,
+        #fff1 0 4px,
+        #ffffff05 4px 20px
+      );
+      opacity: 0.4;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 16px;
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 22px;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .visit {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 13px 10px;
+      margin-bottom: 17px;
+      background-color: #f6fafd;
+      box-shadow: 0 2px 8px #007bff0f;
+      position: relative;
+    }
+    .visit .badge {
+      font-size: 1rem;
+      vertical-align: -2px;
+    }
+    .owner-card {
+      background: linear-gradient(90deg, #e3f1fc 60%, #e7f6ff 100%);
+      border: 2px solid #007bff33;
+      border-radius: 10px;
+      padding: 12px 16px 10px;
+      margin-bottom: 13px;
+      margin-top: -8px;
+      box-shadow: 0 2px 8px #007bff10;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+    .owner-avatar {
+      background: #007bff;
+      color: #fff;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px #fff;
+      border: 3px solid #fff;
+      margin-inline-end: 8px;
+    }
+    .owner-info-text {
+      flex: 1;
+    }
+    .owner-info-text strong {
+      color: #007bff;
+      font-weight: 700;
+    }
+    .back-btn {
+      margin-bottom: 15px;
+      border-radius: 10px;
+      font-size: 1.07rem;
+      font-weight: bold;
+    }
+    footer {
+      position: fixed;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background: #f1f1f1;
+      padding: 15px 0 7px 0;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+      z-index: 100;
+    }
+    footer .copyright {
+      color: #666;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 600px) {
+      .owner-card { flex-direction: column; align-items: flex-start; gap: 7px; }
+      .owner-avatar { margin-inline-end: 0; margin-bottom: 7px; }
+      body { padding-bottom: 90px; }
+      footer { font-size: 0.95em; }
+      footer .copyright { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-card">
+    <div class="main-title-3d">
+      نظام متابعة الزيارات<br>كمبوند كنز
+    </div>
+    <h2>📊 تقارير الزيارات السابقة</h2>
+    <button class="btn btn-outline-primary w-100 back-btn" onclick="window.location.href='security-dashboard.html'">⬅️ عودة للزيارات المفتوحة</button>
+    <form class="row gy-2 gx-2 align-items-center" id="searchForm" onsubmit="return false;">
+      <div class="col-12 col-md-4">
+        <input type="date" id="dateInput" class="form-control" />
+      </div>
+      <div class="col-12 col-md-4">
+        <input type="text" id="unitInput" class="form-control" placeholder="رقم الوحدة (اختياري)" />
+      </div>
+      <div class="col-12 col-md-4 d-grid">
+        <button type="button" class="btn btn-primary" onclick="loadHistory()">بحث</button>
+      </div>
+    </form>
+    <div id="historyContainer">
+      <div class="text-center text-muted">يرجى اختيار تاريخ لعرض التقارير.</div>
+    </div>
+  </div>
+  <footer>
+    <div class="copyright">
+      Copyright © 2025 "GENIUS Tech" All Rights Reserved
+    </div>
+  </footer>
+  <script type="module">
+    // حماية الصفحة من الدخول غير المسجل
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNudtJkLa0ZuXu0DO1IPLYVC-PtEdBrOE",
+      authDomain: "zowar-c8626.firebaseapp.com",
+      projectId: "zowar-c8626",
+      storageBucket: "zowar-c8626.appspot.com",
+      messagingSenderId: "807825141119",
+      appId: "1:807825141119:web:db3b075d3f54474c3bbe4a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "security-auth.html";
+      }
+    });
+
+    window.loadHistory = async function () {
+      const date = document.getElementById("dateInput").value;
+      let unit = document.getElementById("unitInput").value.trim().replace(/\s+/g, '').toUpperCase();
+      const historyContainer = document.getElementById("historyContainer");
+
+      if (!date) {
+        historyContainer.innerHTML = "<div class='alert alert-warning text-center'>يرجى اختيار تاريخ.</div>";
+        return;
+      }
+
+      historyContainer.innerHTML = "<div class='text-center text-muted'>جاري تحميل البيانات...</div>";
+
+      let filters = [
+        where("date", "==", date),
+        where("entered", "==", true)
+      ];
+      if (unit) {
+        filters.push(where("unitNumber", "==", unit));
+      }
+      let q = query(collection(db, "visits"), ...filters);
+
+      try {
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          historyContainer.innerHTML = "<div class='text-center text-muted'>لا توجد زيارات سابقة لهذا التاريخ.</div>";
+          return;
+        }
+
+        historyContainer.innerHTML = "";
+        let counter = 1;
+        snapshot.forEach(docItem => {
+          const data = docItem.data();
+          let ownerInitial = data.ownerName && data.ownerName.length ? data.ownerName.trim()[0] : "👤";
+          let entryTimeText = data.entryTime
+            ? (data.entryTime.seconds
+                ? new Date(data.entryTime.seconds * 1000).toLocaleTimeString()
+                : new Date(data.entryTime).toLocaleTimeString())
+            : "<span class='text-muted'>—</span>";
+
+          // Format date (yyyy-mm-dd) to dd / mm / yyyy
+          let visitDate = "";
+          if (data.date) {
+            const parts = data.date.split("-");
+            if (parts.length === 3) {
+              visitDate = `${parts[2]} / ${parts[1]} / ${parts[0]}`;
+            }
+          }
+
+          const div = document.createElement("div");
+          div.className = "visit";
+          div.innerHTML = `
+            <div class="owner-card mb-2">
+              <div class="owner-avatar">${ownerInitial}</div>
+              <div class="owner-info-text">
+                <div><strong>المالك:</strong> ${data.ownerName || "<span class='text-danger'>غير متوفر</span>"}</div>
+                <div><strong>رقم الوحدة:</strong> ${data.unitNumber || "<span class='text-danger'>غير متوفر</span>"}</div>
+                <div><strong>تليفون المالك:</strong> <a href="tel:${data.phone || ""}" style="color:#178a3e;text-decoration:underline;">${data.phone || "غير متوفر"}</a></div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-secondary me-2">${counter++}</span>
+              <strong>الزائر:</strong>&nbsp; ${data.visitorName}
+            </div>
+            <div><strong>رقم السيارة:</strong> ${data.carNumber || "غير محدد"}</div>
+            <div><strong>تاريخ الزيارة:</strong> ${visitDate || "غير متوفر"}</div>
+            <div><strong>وقت التسجيل:</strong> ${data.timestamp?.toDate().toLocaleTimeString() || "غير متوفر"}</div>
+            <div><strong>وقت الدخول:</strong> ${entryTimeText}</div>
+          `;
+          historyContainer.appendChild(div);
+        });
+      } catch (err) {
+        historyContainer.innerHTML = "<div class='alert alert-danger text-center'>⚠️ حدث خطأ أثناء تحميل البيانات.</div>";
+      }
+    };
+
+    document.getElementById("dateInput").value = new Date().toISOString().split("T")[0];
+    loadHistory();
+  </script>
+    <script src="/sw-register.js" defer></script>
+
+</body>
+</html>

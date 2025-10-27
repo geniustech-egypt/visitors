@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تقرير الزيارات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      text-align: right;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 70px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .visit-card {
+      background-color: #fff3cd;
+      border-right: 5px solid #ffc107;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+
+    .visit-card p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .no-result {
+      color: red;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .back-link {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    footer {
+      position: fixed;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background: #f1f1f1;
+      padding: 15px 0 7px 0;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+      z-index: 100;
+    }
+    footer .copyright {
+      color: #666;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+      letter-spacing: 1px;
+    }
+    @media (max-width:600px) {
+      body { padding-bottom: 90px; }
+      footer { font-size: 0.95em; }
+      footer .copyright { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>تقرير الزيارات</h2>
+
+    <label>اختر التاريخ:</label>
+    <input type="date" id="dateInput" />
+
+    <button onclick="loadReport()">عرض التقرير</button>
+
+    <div id="reportResult"></div>
+
+    <div class="back-link">
+      <a href="security.html">
+        <button style="background-color:#28a745;">🔙 الرجوع إلى صفحة الأمن</button>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="copyright">
+      Copyright © 2025 "GENIUS Tech" All Rights Reserved
+    </div>
+  </footer>
+
+  <script type="module">
+    // -------------------- حماية الصفحة من الدخول المباشر --------------------
+    const securityAuth = sessionStorage.getItem("securityAuth");
+    const securityEmail = sessionStorage.getItem("securityEmail");
+    if (!securityAuth || !securityEmail) {
+      window.location.href = "security-auth.html";
+    }
+    // تأكد أن الحساب هو حساب أمن فعلاً (يمكنك تغيير الإيميل حسب ما هو مسجل لديك)
+    if (securityEmail !== "security@zowarkenz.com") {
+      sessionStorage.clear();
+      window.location.href = "security-auth.html";
+    }
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNudtJkLa0ZuXu0DO1IPLYVC-PtEdBrOE",
+      authDomain: "zowar-c8626.firebaseapp.com",
+      projectId: "zowar-c8626",
+      storageBucket: "zowar-c8626.appspot.com",
+      messagingSenderId: "807825141119",
+      appId: "1:807825141119:web:db3b075d3f54474c3bbe4a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.loadReport = async function () {
+      const selectedDate = document.getElementById("dateInput").value;
+      const resultDiv = document.getElementById("reportResult");
+      resultDiv.innerHTML = "";
+
+      if (!selectedDate) {
+        resultDiv.innerHTML = `<p class="no-result">يرجى اختيار التاريخ.</p>`;
+        return;
+      }
+
+      const q = query(collection(db, "visits"), where("date", "==", selectedDate));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        resultDiv.innerHTML = `<p class="no-result">لا توجد زيارات في هذا التاريخ.</p>`;
+        return;
+      }
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const card = document.createElement("div");
+        card.classList.add("visit-card");
+        card.innerHTML = `
+          <p><strong>اسم الزائر:</strong> ${data.visitorName}</p>
+          <p><strong>رقم السيارة:</strong> ${data.carNumber || 'غير مسجل'}</p>
+          <p><strong>اسم المالك:</strong> ${data.ownerName}</p>
+          <p><strong>رقم الوحدة:</strong> ${data.unitNumber}</p>
+          <p><strong>تاريخ الزيارة:</strong> ${data.date}</p>
+          <p><strong>الحالة:</strong> ${data.entered ? '✅ تم الدخول' : '🚫 لم يتم الدخول بعد'}</p>
+        `;
+        resultDiv.appendChild(card);
+      });
+    };
+  </script>
+    <script src="/sw-register.js" defer></script>
+
+</body>
+</html>

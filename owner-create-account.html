@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#67ba94">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta charset="UTF-8" />
+  <title id="pageTitle">إنشاء حساب مالك جديد</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link id="bootstrapLink" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Cairo', sans-serif; background: #f8f9fa; min-height: 100vh; position: relative; padding-bottom: 64px; }
+    .auth-card { max-width: 370px; margin: 70px auto; background: #fff; border-radius: 14px; box-shadow: 0 3px 14px #0001; padding: 34px 28px 24px; }
+    .form-control { font-size: 1.1rem; }
+    .error-msg { color: #dc3545; margin-top: 10px; min-height:1.3em;}
+    .success-msg { color: #1b8a00; margin-top: 10px; min-height: 1.3em; font-weight: bold;}
+    .main-title {
+      font-size: 1.28rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      letter-spacing: 1.5px;
+      text-align: center;
+      color: #079b5f;
+      text-shadow:
+        0 2px 8px #079b5f50,
+        0 1px 0 #fff,
+        0 4px 12px #079b5f30;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      user-select: none;
+      direction: rtl;
+      min-height: 2.5em;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 18px auto;
+      font-size: 2.6rem;
+      text-align: center;
+      filter: drop-shadow(0 3px 8px #079b5f22);
+    }
+    .lang-btn {
+      position: absolute;
+      top: 13px;
+      left: 12px;
+      z-index: 2;
+      padding: 6px 11px;
+      font-size: 1.05rem;
+      border-radius: 8px;
+      font-weight: bold;
+      min-width: 36px;
+      min-height: 36px;
+      letter-spacing: 1px;
+      border: 1px solid #079b5f;
+      background: #f2f2f2;
+      color: #079b5f;
+      transition: background 0.2s, color 0.2s;
+    }
+    .lang-btn:hover {
+      background: #079b5f;
+      color: #fff;
+    }
+    footer {
+      position: fixed;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      background: #f1f1f1;
+      padding: 15px 0 7px 0;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+      z-index: 100;
+    }
+    footer .copyright {
+      color: #666;
+      font-size: 0.75rem;
+      font-family: 'Cairo', sans-serif;
+      letter-spacing: 1px;
+    }
+    @media (max-width:600px) {
+      .auth-card {margin: 30px auto;}
+      body { padding-bottom: 80px; }
+      footer { font-size: 0.95em; }
+      footer .copyright { font-size: 0.8rem; }
+      .lang-btn {top: 7px; left: 7px; font-size: 0.95em;}
+    }
+  </style>
+</head>
+<body>
+  <button class="lang-btn btn" id="toggleLangBtn">EN</button>
+  <div class="auth-card">
+    <div class="main-title" id="mainTitle">إنشاء حساب مالك جديد</div>
+    <span class="logo">🏠</span>
+    <div class="mb-3">
+      <input type="email" id="ownerEmail" class="form-control mb-2" placeholder="البريد الإلكتروني الخاص بالمالك" autocomplete="off" />
+      <input type="password" id="ownerPassword" class="form-control mb-2" placeholder="كلمة السر الخاصة بالمالك" autocomplete="off" />
+      <input type="text" id="ownerName" class="form-control mb-2" placeholder="اسم المالك" autocomplete="off" />
+      <input type="text" id="unitNumber" class="form-control mb-2" placeholder="رقم الوحدة" autocomplete="off" />
+      <input type="text" id="phoneNumber" class="form-control mb-2" placeholder="رقم الهاتف" autocomplete="off" />
+      <div class="form-check mt-2 text-end" id="showPassDiv">
+        <input type="checkbox" id="showPass" class="form-check-input" />
+        <label class="form-check-label" for="showPass">عرض كلمة السر</label>
+      </div>
+    </div>
+    <button class="btn btn-success w-100 mb-2" id="createAccountBtn">إنشاء الحساب</button>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+  </div>
+  <footer>
+    <div class="copyright" id="copyrightText">
+      Copyright © 2025 "GENIUS Tech" All Rights Reserved
+    </div>
+  </footer>
+  <script type="module">
+    // لغة الصفحة
+    let currentLang = "ar";
+    const texts = {
+      ar: {
+        pageTitle: "إنشاء حساب مالك جديد",
+        mainTitle: "إنشاء حساب مالك جديد",
+        ownerEmail: "البريد الإلكتروني الخاص بالمالك",
+        ownerPassword: "كلمة السر الخاصة بالمالك",
+        ownerName: "اسم المالك",
+        unitNumber: "رقم الوحدة",
+        phoneNumber: "رقم الهاتف",
+        showPass: "عرض كلمة السر",
+        createAccountBtn: "إنشاء الحساب",
+        errorFields: "يرجى إدخال جميع البيانات المطلوبة (البريد، كلمة السر، الاسم، رقم الوحدة).",
+        errorEmailUsed: "البريد الإلكتروني مستخدم بالفعل.",
+        errorWeakPass: "كلمة السر ضعيفة، يرجى اختيار كلمة أقوى.",
+        errorGeneric: "حدث خطأ أثناء إنشاء الحساب: ",
+        success: "تم إنشاء الحساب بنجاح! سيتم تحويلك للوحة التحكم...",
+        copyright: 'Copyright © 2025 "GENIUS Tech" All Rights Reserved',
+        btnLang: "EN"
+      },
+      en: {
+        pageTitle: "Create New Owner Account",
+        mainTitle: "Create New Owner Account",
+        ownerEmail: "Owner's Email",
+        ownerPassword: "Owner Password",
+        ownerName: "Owner Name",
+        unitNumber: "Unit Number",
+        phoneNumber: "Phone Number",
+        showPass: "Show Password",
+        createAccountBtn: "Create Account",
+        errorFields: "Please enter all required fields (Email, Password, Name, Unit Number).",
+        errorEmailUsed: "This email is already in use.",
+        errorWeakPass: "Password is too weak, please choose a stronger one.",
+        errorGeneric: "Error creating account: ",
+        success: "Account created successfully! Redirecting to dashboard...",
+        copyright: 'Copyright © 2025 "GENIUS Tech" All Rights Reserved',
+        btnLang: "AR"
+      }
+    };
+
+    function switchLang() {
+      currentLang = (currentLang === "ar") ? "en" : "ar";
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+      document.getElementById("pageTitle").textContent = texts[currentLang].pageTitle;
+      document.getElementById("mainTitle").textContent = texts[currentLang].mainTitle;
+      document.getElementById("ownerEmail").placeholder = texts[currentLang].ownerEmail;
+      document.getElementById("ownerPassword").placeholder = texts[currentLang].ownerPassword;
+      document.getElementById("ownerName").placeholder = texts[currentLang].ownerName;
+      document.getElementById("unitNumber").placeholder = texts[currentLang].unitNumber;
+      document.getElementById("phoneNumber").placeholder = texts[currentLang].phoneNumber;
+      document.querySelector("label[for='showPass']").textContent = texts[currentLang].showPass;
+      document.getElementById("createAccountBtn").textContent = texts[currentLang].createAccountBtn;
+      document.getElementById("copyrightText").textContent = texts[currentLang].copyright;
+      document.getElementById("toggleLangBtn").textContent = texts[currentLang].btnLang;
+      document.getElementById("bootstrapLink").href =
+        currentLang === "ar"
+          ? "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
+          : "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css";
+    }
+
+    document.getElementById("toggleLangBtn").addEventListener("click", switchLang);
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNudtJkLa0ZuXu0DO1IPLYVC-PtEdBrOE",
+      authDomain: "zowar-c8626.firebaseapp.com",
+      projectId: "zowar-c8626",
+      storageBucket: "zowar-c8626.appspot.com",
+      messagingSenderId: "807825141119",
+      appId: "1:807825141119:web:db3b075d3f54474c3bbe4a"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    function getDeviceId() {
+      let id = localStorage.getItem("deviceId");
+      if (!id) {
+        id = Math.random().toString(36).substring(2) + Date.now();
+        localStorage.setItem("deviceId", id);
+      }
+      return id;
+    }
+
+    // عرض كلمة السر
+    document.getElementById("showPass").addEventListener("change", function () {
+      document.getElementById("ownerPassword").type = this.checked ? "text" : "password";
+    });
+
+    document.getElementById("createAccountBtn").addEventListener("click", async () => {
+      const ownerEmail = document.getElementById("ownerEmail").value.trim();
+      const ownerPassword = document.getElementById("ownerPassword").value.trim();
+      const ownerName = document.getElementById("ownerName").value.trim();
+      const unitNumber = document.getElementById("unitNumber").value.trim();
+      const phoneNumber = document.getElementById("phoneNumber").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+      const successMsg = document.getElementById("successMsg");
+      errorMsg.textContent = "";
+      successMsg.textContent = "";
+
+      if (!ownerEmail || !ownerPassword || !ownerName || !unitNumber) {
+        errorMsg.textContent = texts[currentLang].errorFields;
+        return;
+      }
+
+      const deviceId = getDeviceId();
+
+      try {
+        // إنشاء مستخدم جديد في Firebase Auth بإيميل وكلمة سر المالك
+        const userCredential = await createUserWithEmailAndPassword(auth, ownerEmail, ownerPassword);
+        const ownerUid = userCredential.user.uid;
+
+        // إنشاء مستند المالك في Firestore ويرتبط بالجهاز (يحفظ في مجموعة owners)
+        await setDoc(doc(db, "owners", ownerUid), {
+          ownerName,
+          email: ownerEmail,
+          unitNumber,
+          phoneNumber,
+          deviceId,
+          isAdmin: false
+        });
+
+        // حفظ مؤشر أن هذا الجهاز أصبح به مالك مسجل (للمرات القادمة)
+        localStorage.setItem("ownerHasAccount_v1", "yes");
+
+        successMsg.textContent = texts[currentLang].success;
+        setTimeout(() => {
+          window.location.href = "owner-dashboard.html";
+        }, 1800);
+      } catch (err) {
+        if (err.code === "auth/email-already-in-use") {
+          errorMsg.textContent = texts[currentLang].errorEmailUsed;
+        } else if (err.code === "auth/weak-password") {
+          errorMsg.textContent = texts[currentLang].errorWeakPass;
+        } else {
+          errorMsg.textContent = texts[currentLang].errorGeneric + err.message;
+        }
+      }
+    });
+  </script>
+    <script src="/sw-register.js" defer></script>
+</body>
+</html>
