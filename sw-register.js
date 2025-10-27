@@ -1,7 +1,7 @@
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/pwabuilder-sw.js');
+      const reg = await navigator.serviceWorker.register('/sw.js');
       console.log('Service Worker مسجّل:', reg);
 
       // التحقق من وجود تحديثات وتنشيطها فوراً
@@ -24,4 +24,5 @@ if ('serviceWorker' in navigator) {
       console.warn('خطأ عند تسجيل Service Worker:', err);
     }
   });
+
 }
