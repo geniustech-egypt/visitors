@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#67ba94">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <!-- تم تعديل المسارات لتكون نسبية من مجلد المشروع /visitors/ -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#67ba94">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8" />
   <title id="pageTitle">تطبيق الزوار</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -303,6 +306,7 @@ console.log("ownerHasAccount_v1 in localStorage:", localStorage.getItem("ownerHa
     };
     // عند تسجيل الخروج في owner-dashboard.html يجب حذف localStorage.removeItem("ownerHasAccount_v1");
   </script>
-  <script src="/sw-register.js" defer></script>
+  <!-- تم تصحيح المسار ليكون نسبياً من /visitors/ -->
+  <script src="sw-register.js" defer></script>
 </body>
 </html>
